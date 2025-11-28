@@ -71,8 +71,11 @@
 </head>
 <body class="light-mode" style="font-family: 'Poppins', sans-serif;">
 
+    <!-- Fixed Dark Mode Toggle -->
+    <button id="theme-toggle-hero" class="fixed top-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 dark:bg-slate-800/30 dark:hover:bg-slate-800/50 backdrop-blur-md transition-all shadow-lg text-2xl z-50" aria-label="Toggle Dark Mode">🌙</button>
+
     <!-- Hero Section -->
-    <header id="hero" class="h-screen flex flex-col items-center justify-center text-center transition-all duration-1000 ease-in-out">
+    <header id="hero" class="relative h-screen flex flex-col items-center justify-center text-center transition-all duration-1000 ease-in-out">
         <img id="profile-pic" src="./images/profile.jpg" alt="Keegan Kinyanjui" class="w-48 h-48 rounded-full mb-4 object-cover shadow-xl transition-all duration-1000 ease-in-out">
         <h1 id="name" class="text-5xl font-bold transition-all duration-1000 ease-in-out">Keegan Kinyanjui</h1>
         <p id="title" class="text-2xl text-gray-500 dark:text-gray-400 transition-all duration-1000 ease-in-out">Full-Stack Developer</p>
@@ -372,7 +375,7 @@
         <section id="contact" class="fade-in text-center p-8 rounded-2xl shadow-lg bg-white/30 dark:bg-slate-800/50 backdrop-blur-sm ring-1 ring-slate-900/5">
             <h2 class="text-3xl font-semibold mb-8">Contact Information</h2>
              <div class="flex flex-wrap justify-center gap-8">
-                <a href="mailto:kinyanjuiibabu@gmail.com" class="flex items-center gap-2 text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors group">
+                <a href="mailto:kinyanjuiibabu@gmail.com" target="_self" class="flex items-center gap-2 text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 transition-colors group">
                     <div class="p-3 bg-sky-100 dark:bg-sky-900/30 rounded-full group-hover:scale-110 transition-transform">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
@@ -394,17 +397,8 @@
         </section>
     </main>
 
-    <!-- Bottom Bar -->
-    <footer id="bottom-bar" class="fixed bottom-4 inset-x-0 mx-auto w-fit bg-gradient-to-r from-blue-400 to-teal-400 dark:from-blue-800 dark:to-teal-800 backdrop-blur-md p-2 shadow-lg flex justify-center items-center space-x-4 z-50 rounded-full">
-         <div id="section-tracker" class="hidden items-center space-x-2"></div>
-         <div id="contact-links" class="hidden items-center space-x-4 text-white">
-            <a href="https://github.com/iamnigelthe1st" target="_blank" class="hover:text-slate-200">GitHub</a>
-            <a href="https://www.linkedin.com/in/keegan-k-5834b987" target="_blank" class="hover:text-slate-200">LinkedIn</a>
-            <a href="mailto:kinyanjuiibabu@gmail.com" class="hover:text-slate-200">Email</a>
-        </div>
-        <button id="theme-toggle" class="p-2 rounded-full text-white hover:text-slate-200">🌙</button>
-        <button id="to-top" class="hidden p-2 rounded-full transition-opacity text-white hover:text-slate-200">🔝</button>
-    </footer>
+    <!-- Back to Top Button -->
+    <button id="to-top" class="fixed bottom-6 left-6 hidden p-3 rounded-full bg-sky-500 text-white shadow-lg hover:bg-sky-600 transition-all z-50 text-xl" aria-label="Back to Top">🔝</button>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -414,12 +408,8 @@
         const title = document.getElementById('title');
         const navbar = document.getElementById('navbar');
         const toTopButton = document.getElementById('to-top');
-        const bottomBar = document.getElementById('bottom-bar');
-        const sectionTracker = document.getElementById('section-tracker');
-        const contactLinks = document.getElementById('contact-links');
         const sections = document.querySelectorAll('main section');
-        const themeToggle = document.getElementById('theme-toggle');
-
+        
         let lastScrollY = window.scrollY;
         let isHeroVisible = true;
 
@@ -439,9 +429,6 @@
                 title.classList.remove('text-2xl');
                 title.classList.add('text-xl');
                 isHeroVisible = false;
-                 // Show bottom bar after hero animation
-                bottomBar.classList.remove('opacity-0');
-
             } else if (scrollY <= 50 && !isHeroVisible) {
                 hero.classList.add('h-screen');
                 hero.classList.remove('h-auto', 'py-8');
@@ -452,23 +439,18 @@
                 title.classList.add('text-2xl');
                 title.classList.remove('text-xl');
                 isHeroVisible = true;
-                 // Hide bottom bar with hero
-                bottomBar.classList.add('opacity-0');
             }
 
-            // --- Sequential Navigation Bars ---
+            // --- Navbar Visibility ---
             if (scrollY > 50) { // Past the hero section
                 if (scrollDirection === 'up') {
                     navbar.classList.remove('-translate-y-full');
-                    bottomBar.classList.add('opacity-0');
                 } else { // Scrolling Down
                     navbar.classList.add('-translate-y-full');
-                    bottomBar.classList.remove('opacity-0');
                 }
             } else {
                 navbar.classList.add('-translate-y-full');
             }
-
 
             // --- Section Fade-in Animation ---
             sections.forEach(section => {
@@ -481,8 +463,12 @@
                 }
             });
 
-            // --- Bottom Bar Content ---
-            updateBottomBar();
+            // --- To Top Button Visibility ---
+            if (scrollY > 300) {
+                 toTopButton.classList.remove('hidden');
+            } else {
+                 toTopButton.classList.add('hidden');
+            }
 
             lastScrollY = scrollY;
         });
@@ -507,69 +493,20 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        themeToggle.addEventListener('click', () => {
+        // Theme Toggle Logic
+        // We removed the bottom bar toggle, so we only use the fixed hero toggle now
+        const themeToggleHero = document.getElementById('theme-toggle-hero');
+        
+        if(themeToggleHero) {
+            themeToggleHero.addEventListener('click', toggleTheme);
+        }
+
+        function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             document.body.classList.toggle('light-mode');
             const isDarkMode = document.body.classList.contains('dark-mode');
-            themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
-        });
-
-
-        // --- UTILITY FUNCTIONS ---
-        function updateBottomBar() {
-            const scrollBottom = window.scrollY + window.innerHeight;
-
-            // Section Tracker Logic
-            let passedSections = [];
-            sections.forEach(section => {
-                // Activate when the top of the section is near the top of the viewport
-                if (section.getBoundingClientRect().top < window.innerHeight / 2) {
-                     passedSections.push(section.id);
-                }
-            });
-
-            if (passedSections.length > 0 && scrollBottom < document.body.offsetHeight - 50) {
-                sectionTracker.classList.remove('hidden');
-                sectionTracker.classList.add('flex');
-            } else {
-                sectionTracker.classList.add('hidden');
-                 sectionTracker.classList.remove('flex');
-            }
-            
-            sectionTracker.innerHTML = '';
-            passedSections.forEach(id => {
-                const icon = document.createElement('span');
-                icon.textContent = id.charAt(0).toUpperCase();
-                icon.className = 'bg-white/20 text-white text-xs w-7 h-7 flex items-center justify-center rounded-full ring-1 ring-white/30';
-                sectionTracker.appendChild(icon);
-            });
-
-
-            // Contact Links Logic
-            if (scrollBottom >= document.body.offsetHeight - 100) { // Show a bit earlier
-                contactLinks.classList.remove('hidden');
-                contactLinks.classList.add('flex');
-                sectionTracker.classList.add('hidden'); // Hide tracker
-            } else {
-                contactLinks.classList.add('hidden');
-                contactLinks.classList.remove('flex');
-            }
-
-            // To Top Button Logic
-            if (window.scrollY > 300) {
-                 toTopButton.classList.remove('hidden');
-            } else {
-                 toTopButton.classList.add('hidden');
-            }
+            if(themeToggleHero) themeToggleHero.textContent = isDarkMode ? '☀️' : '🌙';
         }
-
-         // Set initial state of bottom bar
-        if (window.scrollY > 50) {
-            bottomBar.classList.remove('opacity-0');
-        } else {
-            bottomBar.classList.add('opacity-0');
-        }
-
     });
     </script>
 </body>
